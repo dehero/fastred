@@ -1,0 +1,26 @@
+{
+    "name": "dehero/fastred",
+    "description": "Procedural micro-framework for PHP server and JavaScript frontend.",
+	"license": "MIT",
+	"version": "0.1.0",
+    "keywords": ["framework"],
+    "homepage": "https://github.com/dehero/fastred",
+    "type": "library",
+    "authors": [
+        {
+            "name": "dehero",
+            "email": "dehero@outlook.com",
+            "homepage": "http://github.com/dehero",
+            "role": "Developer"
+        }
+    ],
+	"require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "files": ["fastred.php"]
+    },
+	"archive": {
+        "exclude": ["/js", "/fastred.js", "/package.json"]
+    }
+}
