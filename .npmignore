@@ -1,4 +1,4 @@
 .idea
-php
 composer.json
 fastred.php
+modules/*.php
