@@ -1,0 +1,10 @@
+{
+    "-decimal-point": ".",
+    "-thousands-separator": ",",
+    "1-byte": "%1 byte|%1 bytes",
+    "1-kb": "%1 KB",
+    "1-mb": "%1 MB",
+    "1-gb": "%1 GB",
+    "1-tb": "%1 TB",
+    "1-pb": "%1 PB"
+}
