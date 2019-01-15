@@ -49,7 +49,7 @@ You can use [composer][], so Fastred will be included with `autoload.php`:
 Or you can extract Fastred distributive somewhere into your project's directory, then:
 
 ```php
-require 'path/to/fastred.php'
+require 'path/to/fastred.php';
 ```
 
 ### API
@@ -58,47 +58,50 @@ Fastred provides two basic functions:
 
 #### fastredLibrary($path)
 
+Add folder path to search for modules in.
+
 #### fastredRequire($module1, $module2, ...)
+
+Require modules found in all added paths.
 
 ### Usage
 
-Provide one or more directories to search modules in. Basic modules are included with `fastred.php`
-
+Provide one or more directories to search modules in. Basic Fastred modules are included with `fastred.php`
+   
 ```php
-fastredLibrary(__DIR__ . '/modulesA')
-fastredLibrary(__DIR__ . '/modulesB')
-```
 
-```php
-fastredRequire($module1, $module2, ...)
-fastredRequire($module3)
-```
+// Add folder paths to search for modules in
+fastredLibrary(__DIR__ . '/modulesA');
+fastredLibrary(__DIR__ . '/modulesB');
 
-```php
+// Require modules module1.php, module2.php, module3.php
+fastredRequire($module1, $module2, ...);
+fastredRequire($module3);
+
+// Use functions and constants from modules
 module1Function($arg);
 module2Function($arg);
-echo MODULE2_CONST;
+echo MODULE3_CONST;
 ```
-
-### Extending
-
-
-
 ## JavaScript
 
 ### Requirements
 
 * Webpack
 
-### Usage
+### Installation
 
     npm install fastred
 
+### Usage    
+
 ```js
-fastredLibrary(require.context('./js'))
+fastredLibrary(require.context('./js'));
 ```
 
-#### fastredLibrary()
+### API
+
+#### fastredLibrary(webpackContext)
 
 #### fastredRequire(module1, module2, ...)
 
