@@ -131,8 +131,8 @@ function dbSqlGetSelect($table, $columns = null, $where = null, $orderBy = null,
 
     return sqlGetSelect(
         $table, $columns, $where, $orderBy,
-        $pgn ? $pgn->page * $pgn->viewCount : null,
         $pgn ? $pgn->viewCount : null,
+        $pgn ? $pgn->page * $pgn->viewCount : null,
         $pgn ? 'SQL_CALC_FOUND_ROWS' : null
     );
 }
