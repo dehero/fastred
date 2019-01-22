@@ -62,9 +62,13 @@ function objGetMerged($obj1, $obj2, $recursive = false) {
 }
 
 function objGetProperty($obj, $key, $default = null) {
-    if (is_object($obj) && $key != '') {
-        $result = $obj->$key;    
-    }    
+    if ($key != '') {
+        if (is_object($obj)) {
+            $result = $obj->{$key};
+        } elseif (is_array($obj)) {
+            $result = $obj[$key];
+        }
+    } 
     if (!isset($result)) {
         if (is_object($default) && ($default instanceof Closure)) {
             return $default();
