@@ -27,6 +27,19 @@ window.objGetMerged = function(obj1, obj2, recursive) {
 
     return result;
 };
+window.objGetProperty = function(obj, key, def) {
+    if (varIsObj(obj) && key != '') {
+        result = obj[key];
+    } 
+    if (typeof result === 'undefined') {
+        if (def && typeof def === 'function') {
+            return def();
+        } else {
+            return def;
+        }
+    };
+    return result;
+};
 window.objHasProperties = function (obj) {
     for (var name in obj) {
         return false;
