@@ -174,7 +174,7 @@ function imgGetFile($file, &$width = null, &$height = null, &$type = null) {
 }
 
 function imgSizeGetResized($width, $height, $widthMax = null, $heightMax = null) {
-    if (!empty($widthMax) && !empty($heightMax)) {
+    if (!empty($widthMax) && !empty($heightMax) && ($width > $widthMax || $height > $heightMax)) {
         $height = round($widthMax / $width * $height);
 
         if ($height > $heightMax) {
@@ -182,11 +182,11 @@ function imgSizeGetResized($width, $height, $widthMax = null, $heightMax = null)
             $height = $heightMax;
         } else
             $width = $widthMax;
-    } elseif (!empty($widthMax)) {
+    } elseif (!empty($widthMax) && $width > $widthMax) {
         $height = round($widthMax / $width * $height);
         $width = $widthMax;
     }
-    elseif (!empty($heightMax)) {
+    elseif (!empty($heightMax) && $height > $heightMax) {
         $width = round($heightMax / $height * $width);
         $height = $heightMax;
     }
