@@ -28,7 +28,7 @@ if (!function_exists('sqlGetSelect')) {
             . ' FROM ' . sqlTableToStr($table)
             . (!empty($where) ? ' WHERE ' . sqlWhereToStr($where) : '')
             . (!empty($orderBy) ? ' ORDER BY ' . sqlOrderByToStr($orderBy) : '')
-            . (!empty($count) ? ' LIMIT ' . (!empty($offset) ? sqlValueToStr($offset) . ', ' : '') . sqlValueToStr($count) : '');
+            . (!empty($count) ? ' LIMIT ' . (!empty($offset) ? (integer)($offset) . ', ' : '') . (integer)($count) : '');
     }
 }
 
