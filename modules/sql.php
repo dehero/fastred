@@ -89,28 +89,26 @@ if (!function_exists('sqlWhereToStr')) {
         if (is_array($where)) {
             $i = 0;
             foreach ($where as $whereKey => $whereValue) {
-//                if (!empty($whereValue)) {
-                    $result .= ($i++ ? " $operator " : '');
-                    if (is_integer($whereKey)) {
-                        $result .= ' ' . $whereValue;
-                    } else {
-                        $result .= $whereKey;
-                        if (is_null($whereValue)) {
-                            $result .= ' IS NULL';
-                        } else if (is_array($whereValue)) {
-                            $j = 0;
-                            $result .= ' IN (';
-                            foreach ($whereValue as $value) {
-                                if (isset($value)) {
-                                    $result .= ($j++ ? ', ' : '') . '"' . sqlValueToStr($value) . '"';
-                                }
+                $result .= ($i++ ? " $operator " : '');
+                if (is_integer($whereKey)) {
+                    $result .= ' ' . $whereValue;
+                } else {
+                    $result .= $whereKey;
+                    if (is_null($whereValue)) {
+                        $result .= ' IS NULL';
+                    } else if (is_array($whereValue)) {
+                        $j = 0;
+                        $result .= ' IN (';
+                        foreach ($whereValue as $value) {
+                            if (isset($value)) {
+                                $result .= ($j++ ? ', ' : '') . sqlValueToStr($value);
                             }
-                            $result .= ')';
-                        } else {
-                            $result .= ' = "' . sqlValueToStr($whereValue) . '"';
                         }
+                        $result .= ')';
+                    } else {
+                        $result .= ' = ' . sqlValueToStr($whereValue);
                     }
-//                }
+                }
             }
         } else {
             $result = (string)$where;
@@ -120,9 +118,19 @@ if (!function_exists('sqlWhereToStr')) {
     }
 }
 
+if (!function_exists('sqlValueGetEscaped')) {
+    function sqlValueGetEscaped($value) {
+        return (string)$value;
+    }
+}
+
 if (!function_exists('sqlValueToStr')) {
     function sqlValueToStr($value) {
-        return (string)$value;
+        if (is_null($value)) {
+            return 'NULL';
+        } else {
+            return '"' . sqlValueGetEscaped($value) . '"';
+        }
     }
 }
 
@@ -154,12 +162,12 @@ if (!function_exists('sqlValuesToStr')) {
                 break;
             case 'values':
                 foreach ($values as $value) {
-                    $result .= ($i++ ? ', ' : '') . (is_null($value) ? 'NULL' : '"' . sqlValueToStr($value) . '"');
+                    $result .= ($i++ ? ', ' : '') . sqlValueToStr($value);
                 }
                 break;
             case 'pairs':
                 foreach ($values as $key => $value) {
-                    $result .= ($i++ ? ', ' : '') . $key . ' = ' . (is_null($value) ? 'NULL' : '"' . sqlValueToStr($value) . '"');
+                    $result .= ($i++ ? ', ' : '') . $key . ' = ' . sqlValueToStr($value);
                 }
                 break;
         }
