@@ -49,7 +49,11 @@ function objGetMapped($obj, $mapping) {
 
 function objMap($obj, $mapping) {
     foreach ($mapping as $key1 => $key2) {
-        $obj->{$key1} = $obj->{$key2};
+        if (is_object($key2) && ($key2 instanceof Closure)) {
+            $obj->{$key1} = $key2($obj);
+        } else {
+            $obj->{$key1} = $obj->{$key2};
+        }
     }
 }
 
