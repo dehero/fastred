@@ -134,19 +134,21 @@ if (!function_exists('sqlValueToStr')) {
     }
 }
 
-function sqlValuesGetFiltered($values, $columns = null) {
+if (!function_exists('sqlValuesGetFiltered')) {
+    function sqlValuesGetFiltered($values, $columns = null) {
 
-    fastredRequire('arr');
+        fastredRequire('arr');
 
-    $result = new stdClass();
+        $result = new stdClass();
 
-    foreach ($values as $key => $value) {
-        if (arrIncludes($columns, $key)) {
-            $result->{$key} = $value;
+        foreach ($values as $key => $value) {
+            if (arrIncludes($columns, $key)) {
+                $result->{$key} = $value;
+            }
         }
-    }
 
-    return $result;
+        return $result;
+    }
 }
 
 if (!function_exists('sqlValuesToStr')) {
