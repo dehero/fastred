@@ -49,7 +49,12 @@ window.objHasProperties = function (obj) {
 window.objMap = function (obj, mapping) {
     for (key1 in mapping) {
         var key2 = mapping[key1];
-        obj[key1] = obj[key2];
+        if (key2 && typeof key2 === 'function') {
+            obj[key1] = key2(obj);
+        } else {
+            obj[key1] = obj[key2];
+        }
+        
     }
 };
 window.objMerge = function(obj1, obj2, recursive) {
