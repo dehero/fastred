@@ -10,15 +10,6 @@ function obj($obj = null) {
     }    
 }
 
-function objGetArrMap($arr, $key) {
-    $map = null;
-    foreach ($arr as $arrKey => $arrValue) {
-        $map[$arrKey] = new stdClass();
-        $map[$arrKey]->$key = $arrValue;
-    }
-    return $map;
-}
-
 /**
  * Puts all object or array properties into new object
  * @param stdClass|array $obj
