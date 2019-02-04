@@ -62,6 +62,15 @@ function dbLoadArrOfObj($sql, $pgn = null) {
     return $result;
 }
 
+function dbLoadArrOfValue($sql) {
+    $dbResult = dbQuery($sql);
+
+    $result = dbResultToArrOfValue($dbResult);
+    dbResultFree($dbResult);
+
+    return $result;    
+}
+
 function dbLoadObj($sql) {
     $dbResult = dbQuery($sql);
 
@@ -105,7 +114,7 @@ function dbQueryLog($sql = null) {
     static $log = array();
 
     if (!is_null($sql)) {
-        array_push($log, $sql);
+        array_push($log, $sql); 
     } else {
         return implode("\n", $log);
     }
@@ -182,6 +191,20 @@ function dbResultToArrOfObj($dbResult) {
     for($i = 0; $i < $rowCount; $i++) {
         $obj = mysqli_fetch_object($dbResult);
         $result[] = $obj;
+    }
+
+    return $result;
+}
+
+function dbResultToArrOfValue($dbResult) {
+    if (!$dbResult) return null;
+
+    $result = [];
+
+    $rowCount = mysqli_num_rows($dbResult);
+    for($i = 0; $i < $rowCount; $i++) {
+        $arr = mysqli_fetch_array($dbResult);
+        $result[] = $arr[0];
     }
 
     return $result;
