@@ -93,20 +93,31 @@ if (!function_exists('sqlWhereToStr')) {
                 if (is_integer($whereKey)) {
                     $result .= ' ' . $whereValue;
                 } else {
-                    $result .= $whereKey;
                     if (is_null($whereValue)) {
-                        $result .= ' IS NULL';
-                    } else if (is_array($whereValue)) {
-                        $j = 0;
-                        $result .= ' IN (';
+                        $result .= $whereKey . ' IS NULL';
+                    } else if (is_array($whereValue)) {                        
+                        $checkNull = false;
+                        $in = '';
+                        $j = 0;                        
                         foreach ($whereValue as $value) {
-                            if (isset($value)) {
-                                $result .= ($j++ ? ', ' : '') . sqlValueToStr($value);
+                            if (is_null($value)) {
+                                $checkNull = true;
+                            } else {
+                                $in .= ($j++ ? ', ' : '') . sqlValueToStr($value);
                             }
                         }
-                        $result .= ')';
+                        if (!empty($in)) {
+                            $in = $whereKey . ' IN (' . $in . ')';
+                            if ($checkNull) {
+                                $result .= '(' . $in . ' OR ' . $whereKey . ' IS NULL)';
+                            } else {
+                                $result .= $in;
+                            }
+                        } elseif ($checkNull) {
+                            $result .= $whereKey . ' IS NULL';
+                        }
                     } else {
-                        $result .= ' = ' . sqlValueToStr($whereValue);
+                        $result .= $whereKey . ' = ' . sqlValueToStr($whereValue);
                     }
                 }
             }
