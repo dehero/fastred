@@ -38,6 +38,10 @@ function fileGetChanged($filepath) {
     return @filemtime($filepath);
 }
 
+function fileGetExt($filepath) {
+    return pathinfo($path, PATHINFO_EXTENSION);
+}
+
 function fileGetName($filepath) {
     return basename($filepath);
 }

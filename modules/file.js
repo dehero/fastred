@@ -1,3 +1,7 @@
+window.fileGetExt = function(file) {
+    return file.split('.').pop();
+}
+
 window.fileGetName = function(file) {
     if (!file) return '';
     return file.replace(/^.*[\\\/]/, '');
