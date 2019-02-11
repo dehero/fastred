@@ -56,7 +56,12 @@ if (!function_exists('sqlOrderByToStr')) {
         if (is_array($orderBy)) {
             $i = 0;
             foreach ($orderBy as $key => $value) {
-                $result .= ($i++ ? ', ' : '') . $key . ($value == 'asc' ? ' ASC' : ' DESC');
+                $result .= ($i++ ? ', ' : '');
+                if (is_integer($key)) {
+                    $result .= $value;
+                } else {
+                    $result .= $key . (strcasecmp($value, 'asc') == 0 ? ' ASC' : ' DESC');
+                }
             }
         } else {
             $result = (string)$orderBy;
