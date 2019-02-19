@@ -8,14 +8,27 @@ window.locale = function(value) {
 
     return window._locale;
 };
-window.localeGetLanguage = function() {
+window.localeGetStr = function(key, args, pluralInt) {
+    var values = localeGetStrObj();
+    var str = values[key];
 
-};
-window.localeGetStr = function(key) {
-//  values = fastredImport('LOCALE_STRINGS');
-    return key;
-};
+    if (varIsNumber(args)) pluralInt = args;
 
+    if (varIsNumber(pluralInt)) {
+        str = localeIntGetPlural(pluralInt, str); 
+    }
+
+    if (args !== null) {
+        fastredRequire('str');
+
+        str = strGetFormatted(str, args);
+    }
+
+    return varIsNotEmpty(str) ? str : key;
+};
+window.localeGetStrObj = function() {
+    return {};
+};
 window.localeFloatToStr = function(float, precision) {
     var decimalPoint = localeGetStr('-decimal-point');
     var thousandsSeparator = localeGetStr('-thousands-separator');
@@ -25,7 +38,6 @@ window.localeFloatToStr = function(float, precision) {
 
     return parts.join(decimalPoint);
 };
-
 window.localeIntGetPlural = function(int, forms) {
     var rules = {
         'en': 0,

@@ -22,6 +22,100 @@ if (!function_exists('locale')) {
 	}
 }
 
+if (!function_exists('localeDatetimeToStr')) {
+	function localeDatetimeToStr($datetime, $key = '-dd-mm-yyyy-hh-ii-ss') {
+		fastredRequire('arr', 'datetime', 'int', 'var');
+
+		$args = [];
+		$obj = datetimeObj($datetime);
+		$arr = arrFromStr($key, '-');
+
+		$dayPrecending = false;		
+
+		foreach($arr as $value) {
+			
+			switch ($value) {
+
+				case 'd':
+				case 'day':
+					$args[] = (integer)$obj->day;
+					$dayPrecending = true;
+					break;
+
+				case 'dd':
+					$args[] = intToStr($obj->day, 2);
+					$dayPrecending = true;
+					break;
+
+				case 'h':
+				case 'hour':
+					$args[] = (integer)$obj->hour;
+					break;					
+
+				case 'hh':
+					$args[] = intToStr($obj->hour, 2);
+					break;
+					
+				case 'i':
+				case 'minute':
+					$args[] = (integer)$obj->minute;
+					break;
+					
+				case 'ii':
+					$args[] = intToStr($obj->minute, 2);
+					break;
+
+				case 'm':
+					$args[] = (integer)$obj->month;
+					break;
+
+				case 'mm':
+					$args[] = intToStr($obj->month, 2);
+					break;
+
+				case 'mon':
+				case 'month':
+					$args[] = localeGetStr('-' . $value . '-' . $obj->month, $dayPrecending ? 2 : 1);					
+					$dayPrecending = false;
+					break;
+
+				case 's':
+					$args[] = (integer)$obj->second;
+					break;
+
+				case 'ss':
+				case 'second':
+					$args[] = $obj->second;
+					break;
+				
+				case 'wd':
+				case 'wkd':
+				case 'weekday':
+					$args[] = localeGetStr('-' . $value . '-' . datetimeGetWeekday($datetime));
+					break;
+	
+				case 'yyyy':
+					$args[] = intToStr($obj->month, 4);
+					break;
+
+				case 'y':
+				case 'year':
+					$args[] = (integer)$obj->year;
+					break;
+			}
+		}
+
+		$result = localeGetStr($key, $args);
+		return empty($result) ? arrToStr($args, ' ') : $result;
+	}
+}
+
+if (!function_exists('localeGetFirstWeekDay')) {
+	function localeGetFirstWeekDay() {
+		return (integer)localeGetStr('-weekday-first');
+	}
+}
+
 if (!function_exists('localeGetStrObj')) {
 	function localeGetStrObj() {
 		fastredRequire('cache');
@@ -64,7 +158,7 @@ if (!function_exists('localeGetStr')) {
 		if (!is_null($args)) {
 			fastredRequire('str');
 
-			return strGetFormatted($str, $args);
+			$str = strGetFormatted($str, $args);
 		}
 
 		return !empty($str) ? $str : $key;
