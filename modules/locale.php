@@ -85,7 +85,7 @@ if (!function_exists('localeDatetimeToStr')) {
 
 				case 'ss':
 				case 'second':
-					$args[] = $obj->second;
+					$args[] = intToStr($obj->second, 2);
 					break;
 				
 				case 'wd':
