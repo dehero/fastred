@@ -13,7 +13,7 @@ window.strGetFormatted = function(str, args) {
     if (!varIsArr(args)) {
         args = [args];
     }
-    return str.replace(/%(\d*)/, function(match, p1) {
+    return str.replace(/%(\d*)/g, function(match, p1) {
         return args[p1 - 1];
     });
 }
