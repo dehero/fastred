@@ -36,7 +36,7 @@ function intIsValid($value) {
 }
 
 function intToStr($value, $leadingZeros = null) {
-    $result = (string)$value;
+    $result = (string)(integer)$value;
 
     return !empty($leadingZeros)
         ? str_pad($result, $leadingZeros, '0', STR_PAD_LEFT)
