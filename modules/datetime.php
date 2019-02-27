@@ -5,63 +5,33 @@ const DATETIME_DEFAULT_TIMEZONE = 'UTC';
 date_default_timezone_set(DATETIME_DEFAULT_TIMEZONE);
 
 if (!function_exists('datetime')) {
+    /**
+     * Creates datetime string value in timezone DATETIME_DEFAULT_TIMEZONE.
+     * @param string|DateTime|stdClass|integer|null $value String to parse, DateTime object, simple datetime object or timestamp. If $value is null, it returns current date and time.
+     * @return string Datetime in format 'yyyy-mm-dd hh:ii:ss'.
+     */
     function datetime($value = null) {
         if (is_string($value)) {
             $value = datetimeObj($value);
         }
+
         if (is_object($value)) {
             if (is_a($value, 'DateTime')) {
                 return $value->format('Y-m-d H:i:s');
             } else {
                 fastredRequire('int');
+                $value = datetimeObj($value);
 
                 return intToStr($value->year, 4) . '-' . intToStr($value->month, 2) . '-' . intToStr($value->day, 2) . ' ' .
                        intToStr($value->hour, 2) . ':' . intToStr($value->minute, 2) . ':' . intToStr($value->second, 2);
             }
         } else {
-            $timestamp = is_null($value) ? time() : $value;
+            $timestamp = is_integer($value) ? $value : time();
 
             return strftime('%Y-%m-%d %H:%M:%S', $timestamp);
         }
     }
 }
-
-function datetimeObjFromStr($str) {
-    fastredRequire('obj');
-
-    $result = obj();
-    $result->year   = 0;
-    $result->month  = 0;
-    $result->day    = 0;
-    $result->hour   = 0;
-    $result->minute = 0;
-    $result->second = 0;
-
-    $matches = [];
-    
-    if (preg_match('/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/', $str, $matches) === 1) {
-        // 2019-02-19 11:55:05    
-        $result->year   = (integer)$matches[1];
-        $result->month  = (integer)$matches[2];
-        $result->day    = (integer)$matches[3];
-        $result->hour   = (integer)$matches[4];
-        $result->minute = (integer)$matches[5];
-        $result->second = (integer)$matches[6];
-    } elseif(preg_match('/(\d{4})-(\d{2})-(\d{2})/', $str, $matches) === 1) {
-        // 2019-02-19
-        $result->year   = (integer)$matches[1];
-        $result->month  = (integer)$matches[2];
-        $result->day    = (integer)$matches[3];
-    } elseif(preg_match('/(\d{2}):(\d{2}):(\d{2})/', $str, $matches) === 1) {
-        // 13:16:19
-        $result->hour    = (integer)$matches[1];
-        $result->minute  = (integer)$matches[2];
-        $result->second  = (integer)$matches[3];
-    }
-
-    return $result;
-}
-
 
 function datetimeGetMonthSize($datetime) {
     return date('t', strtotime($datetime));
@@ -70,48 +40,6 @@ function datetimeGetMonthSize($datetime) {
 if (!function_exists('datetimeGetWeekday')) {
     function datetimeGetWeekday($datetime) {
         return date('w', strtotime($datetime));
-    }
-}
-
-if (!function_exists('datetimeObj')) {
-    function datetimeObj($arg1 = null) {
-        if (is_object($arg1)) return $arg1;
-
-        fastredRequire('arr', 'obj');
-
-        $result = obj();
-        $numArgs = func_num_args();
-
-        if ($numArgs > 1) {
-            for ($i = 0; $i < 6; $i++) {
-                $value = null;
-                if ($i < $numArgs) {
-                    $value = func_get_arg($i);
-                }
-                switch ($i) {
-                    case 0: $result->year   = (integer)$value; break;
-                    case 1: $result->month  = (integer)$value; break;
-                    case 2: $result->day    = (integer)$value; break;
-                    case 3: $result->hour   = (integer)$value; break;
-                    case 4: $result->minute = (integer)$value; break;
-                    case 5: $result->second = (integer)$value; break;
-                }
-            }
-
-        } elseif (is_null($arg1)) {
-            // $result->year   = (integer)$parts[0];
-            // $result->month  = (integer)$parts[1];
-            // $result->day    = (integer)$parts[2];
-            // $result->hour   = (integer)$parts[3];
-            // $result->minute = (integer)$parts[4];
-            // $result->second = (integer)$parts[5];
-        } else {
-            // $datetime = is_null($arg1) ? datetime() : $arg1;
-
-            $result = datetimeObjFromStr($arg1);
-        }
-
-        return $result;
     }
 }
 
@@ -129,6 +57,86 @@ if (!function_exists('datetimeGetModified')) {
         $d->modify("{$year} year {$month} month {$day} day {$hour} hour {$minute} minute {$second} second");
 
         return datetime($d);
+    }
+}
+
+if (!function_exists('datetimeObj')) {
+    /**
+     * Creates datetime object by parsing a string or by year, month, day, hour, minute and second given separately.
+     * @param string|stdClass|integer $arg1 String with date and time or year number.
+     * @param integer $month
+     * @param integer $day
+     * @param integer $hour
+     * @param integer $minute
+     * @param integer $second
+     * @return stdClass Object with datetime components as properties.
+     */
+    function datetimeObj($value = 1, $month = 1, $day = 1, $hour = 0, $minute = 0, $second = 0) {
+        fastredRequire('obj');
+
+        if (is_object($value) || is_array($value)) {            
+            $value = obj($value);
+
+            $year = $value->year;
+            $month = $value->month;
+            $day = $value->day;
+            $hour = $value->hour;
+            $second = $value->second;
+            $minute = $value->minute;
+        } elseif (is_string($value)) {
+            return datetimeObjFromStr($value);
+        } else {
+            $year = $value;
+        }
+
+        $result = obj();
+        $result->year   = $year > 1 ? (integer)$year : 1;
+        $result->month  = $month > 1 ? (integer)$month : 1;
+        $result->day    = $day > 1 ? (integer)$day : 1;
+        $result->hour   = (integer)$hour;
+        $result->minute = (integer)$minute;
+        $result->second = (integer)$second;
+
+        return $result;
+    }
+}
+
+if (!function_exists('datetimeObjFromStr')) {
+    /**
+     * Creates datetime object by parsing a string.
+     * @param string $str String to parse.
+     * @return stdClass Object with datetime components as properties.
+     */
+    function datetimeObjFromStr($str) {
+        fastredRequire('obj');
+
+        if (empty($str)) {
+            return datetimeObj();
+        }        
+
+        $matches = [];
+        
+        if (preg_match('/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/', $str, $matches) === 1) {
+            // 2019-02-19 11:55:05
+            $year   = $matches[1];
+            $month  = $matches[2];
+            $day    = $matches[3];
+            $hour   = $matches[4];
+            $minute = $matches[5];
+            $second = $matches[6];
+        } elseif(preg_match('/(\d{4})-(\d{2})-(\d{2})/', $str, $matches) === 1) {
+            // 2019-02-19
+            $year   = $matches[1];
+            $month  = $matches[2];
+            $day    = $matches[3];
+        } elseif(preg_match('/(\d{2}):(\d{2}):(\d{2})/', $str, $matches) === 1) {
+            // 13:16:19
+            $hour   = $matches[1];
+            $minute = $matches[2];
+            $second = $matches[3];
+        }
+
+        return datetimeObj((integer)$year, $month, $day, $hour, $minute, $second);
     }
 }
 
