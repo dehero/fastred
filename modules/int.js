@@ -8,7 +8,7 @@ window.intFromFloat = function(float) {
     return Math.floor(float);
 };
 window.intFromStr = function(str) {
-    return +str;
+    return +str || 0;
 };
 window.intIsValid = function(value) {
     if (isNaN(value)) {
@@ -18,7 +18,7 @@ window.intIsValid = function(value) {
     return (x | 0) === x;
 };
 window.intToStr = function(value, leadingZeros) {
-    var result = '' + value;
+    var result = '' + (varExists(value) ? +value : 0);
     leadingZeros = parseInt(leadingZeros) || 0;
 
     return result.length >= leadingZeros
