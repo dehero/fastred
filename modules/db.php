@@ -80,7 +80,7 @@ function dbLoadObj($sql) {
     return $result;
 }
 
-function dbLoadObjOfObj($sql, $pgn = null, $id = 'id') {
+function dbLoadIndexOfObj($sql, $pgn = null, $id = 'id') {
     fastredRequire('obj');
 
     if (objHasProperties($pgn)) {
@@ -94,7 +94,7 @@ function dbLoadObjOfObj($sql, $pgn = null, $id = 'id') {
         $dbResult = dbQuery($sql);
     }
 
-    $result = dbResultToObjOfObj($dbResult, $id);
+    $result = dbResultToIndexOfObj($dbResult, $id);
     dbResultFree($dbResult);
 
     return $result;
@@ -210,7 +210,7 @@ function dbResultToArrOfValue($dbResult) {
     return $result;
 }
 
-function dbResultToObjOfObj($dbResult, $id = 'id') {
+function dbResultToIndexOfObj($dbResult, $id = 'id') {
     if (!$dbResult) return null;
 
     fastredRequire('obj');
