@@ -90,6 +90,38 @@ window.datetimeObjFromStr = function(str) {
 
     return datetimeObj(parseInt(year), month, day, hour, minute, second);
 }
+window.datetimeObjGetBetween = function(datetime1, datetime2) {
+    var obj1 = datetimeObj(datetime1);
+    var obj2 = datetimeObj(datetime2 || datetime());
+
+    var date1 = new Date(Date.UTC(obj1.year, obj1.month - 1, obj1.day, obj1.hour, obj1.minute, obj1.second));
+    var date2 = new Date(Date.UTC(obj2.year, obj2.month - 1, obj2.day, obj2.hour, obj2.minute, obj2.second));
+
+    if (date1 > date2) {
+        var date = date1;
+        date1 = date2;
+        date2 = date;
+    }
+
+    function doCompare(from, end, what) {
+        var result = -1;
+        while (from <= end) {
+            result++;
+            from['set' + what](from['get' + what]() + 1);
+        }
+        from['set' + what](from['get' + what]() - 1);
+        return result;
+    }
+
+    return {
+        year:   doCompare(date1, date2, 'FullYear'),
+        month:  doCompare(date1, date2, 'Month'),
+        day:    doCompare(date1, date2, 'Date'),
+        hour:   doCompare(date1, date2, 'Hours'),
+        minute: doCompare(date1, date2, 'Minutes'),
+        second: doCompare(date1, date2, 'Seconds')
+    };    
+}
 window.datetimeGetModified = function(datetime, year, month, day, hour, minute, second) {   
     var obj = datetimeObj(datetime);
 

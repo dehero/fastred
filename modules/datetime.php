@@ -147,7 +147,12 @@ if (!function_exists('datetimeObjGetBetween')) {
         $d1 = new DateTime($datetime1);
         $d2 = new DateTime($datetime2);
 
-        $diff = $d2->diff($d1);
+        if ($d1 < $d2) {
+            $diff = $d1->diff($d2);
+        } else {
+            $diff = $d2->diff($d1);
+        }
+        
         $result = obj();
 
         $result->year   = $diff->y;
