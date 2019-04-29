@@ -27,6 +27,10 @@ function intFromFloat($float) {
     return intval($float);
 }
 
+function intFromHex($hex) {
+    return hexdec($hex);
+}
+
 function intFromStr($str) {
     return intval($str);
 }
@@ -35,10 +39,18 @@ function intIsValid($value) {
     return is_int($value);
 }
 
-function intToStr($value, $leadingZeros = null) {
+function intToHex($value, $zeroPadding = null) {
+    $result = dechex($value);
+
+    return !empty($zeroPadding)
+        ? str_pad($result, $zeroPadding, '0', STR_PAD_LEFT)
+        : $result;
+}
+
+function intToStr($value, $zeroPadding = null) {
     $result = (string)(integer)$value;
 
-    return !empty($leadingZeros)
-        ? str_pad($result, $leadingZeros, '0', STR_PAD_LEFT)
+    return !empty($zeroPadding)
+        ? str_pad($result, $zeroPadding, '0', STR_PAD_LEFT)
         : $result;
 };

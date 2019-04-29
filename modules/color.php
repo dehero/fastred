@@ -8,7 +8,7 @@ function color($color = 0, $green = 0, $blue = 0, $alpha = 0) {
     }
 
     if (varIsHash($color)) {
-        $red = objGetProperty($color, 'green', 0);
+        $red = objGetProperty($color, 'red', 0);
         $green = objGetProperty($color, 'green', 0);
         $blue = objGetProperty($color, 'blue', 0);
         $alpha = objGetProperty($color, 'alpha', 0);
@@ -25,7 +25,7 @@ function color($color = 0, $green = 0, $blue = 0, $alpha = 0) {
     return strToLowerCase($result);
 }
 
-function colorFromStr($color) {
+function colorFromStr($str) {
     fastredRequire('arr', 'str');
 
     static $colors = array(
@@ -178,12 +178,12 @@ function colorFromStr($color) {
         'yellowgreen'=>'9acd32'
     );
 
-    $color = strToLowerCase($color);
+    $str = strToLowerCase($str);
 
-    if (preg_match("/^#?([0-9a-f]{2}){3,4}$/", $color)) {
-        $result = ($color[0] !== '#' ? '#' : '') . $color;
+    if (preg_match("/^#?([0-9a-f]{2}){3,4}$/", $str)) {
+        $result = ($str[0] !== '#' ? '#' : '') . $str;
     } else {
-        $result = $colors[$color];
+        $result = $colors[$str];
         if (!$result) {
              $result = '000000';
         }
@@ -191,6 +191,18 @@ function colorFromStr($color) {
     }
 
     return $result;
+}
+
+function colorGetMixed($color1, $color2, $percent = 50) { 
+    $rgba1 = colorToRGBA($color1);
+    $rgba2 = colorToRGBA($color2);
+    
+    $red = $rgba2->red + ($rgba1->red - $rgba2->red) * $percent / 100;
+    $green = $rgba2->green + ($rgba1->green - $rgba2->green) * $percent / 100;
+    $blue = $rgba2->blue + ($rgba1->blue - $rgba2->blue) * $percent / 100;
+    $alpha = $rgba2->alpha + ($rgba1->alpha - $rgba2->alpha) * $percent / 100;
+    
+    return color($red, $green, $blue, $alpha);
 }
 
 function colorToRGBA($color) {
