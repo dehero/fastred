@@ -28,6 +28,7 @@ window.objGetMerged = function(obj1, obj2, recursive) {
     return result;
 };
 window.objGetProperty = function(obj, key, def) {
+    var result;
     if (varIsObj(obj) && key != '') {
         result = obj[key];
     } 
