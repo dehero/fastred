@@ -21,6 +21,10 @@ function db($permanent = DB_PERMANENT) {
     return $db;
 }
 
+function dbGetError() {
+    return mysqli_error(db());
+}
+
 function dbStrGetEscaped($str) {
     return mysqli_real_escape_string(db(), $str);
 }
@@ -80,7 +84,7 @@ function dbLoadObj($sql) {
     return $result;
 }
 
-function dbLoadObjOfObj($sql, $pgn = null, $id = 'id') {
+function dbLoadIndexOfObj($sql, $pgn = null, $id = 'id') {
     fastredRequire('obj');
 
     if (objHasProperties($pgn)) {
@@ -94,7 +98,7 @@ function dbLoadObjOfObj($sql, $pgn = null, $id = 'id') {
         $dbResult = dbQuery($sql);
     }
 
-    $result = dbResultToObjOfObj($dbResult, $id);
+    $result = dbResultToIndexOfObj($dbResult, $id);
     dbResultFree($dbResult);
 
     return $result;
@@ -146,22 +150,55 @@ function dbSqlGetSelect($table, $columns = null, $where = null, $orderBy = null,
     );
 }
 
-function dbTransactionStart() {
-    $db = db();
-    if (function_exists('mysqli_begin_transaction')) {
-        return mysqli_begin_transaction($db);
+function dbTransactionDepth($value = null) {
+    static $depth = 0;
+
+    if (!is_null($value)) {
+        $depth = $value;
     }
 
-    // For PHP < 5.5
-    return mysqli_query($db, 'START TRANSACTION');
+    return $depth;
+}
+
+function dbTransactionStart() {
+    $depth = dbTransactionDepth();
+
+    dbTransactionDepth($depth + 1);    
+
+    if ($depth === 0) {
+        $db = db();
+
+        if (function_exists('mysqli_begin_transaction')) {
+            return mysqli_begin_transaction($db);
+        }
+
+        // For PHP < 5.5
+        return mysqli_query($db, 'START TRANSACTION');
+    } else {
+        return true;
+    }
 }
 
 function dbTransactionRollback() {
-    return mysqli_rollback(db());
+    $depth = dbTransactionDepth();
+
+    if ($depth > 1) {
+        dbTransactionDepth($depth - 1);
+        return true;
+    } else {
+        return mysqli_rollback(db());
+    }
 }
 
 function dbTransactionEnd() {
-    return mysqli_commit(db());
+    $depth = dbTransactionDepth();
+
+    if ($depth > 1) {
+        dbTransactionDepth($depth - 1);
+        return true;
+    } else {
+        return mysqli_commit(db());
+    }
 }
 
 function dbQuery($sql, $multi = false) {
@@ -210,7 +247,7 @@ function dbResultToArrOfValue($dbResult) {
     return $result;
 }
 
-function dbResultToObjOfObj($dbResult, $id = 'id') {
+function dbResultToIndexOfObj($dbResult, $id = 'id') {
     if (!$dbResult) return null;
 
     fastredRequire('obj');

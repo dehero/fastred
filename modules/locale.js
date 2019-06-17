@@ -1,6 +1,8 @@
 window.LOCALE_DEFAULT = 'en-US';
 window.locale = function(value) {
-    window._locale = LOCALE_DEFAULT;
+    if (typeof window._locale === 'undefined') {
+        window._locale = LOCALE_DEFAULT;
+    }    
 
     if (typeof value === 'string') {
         window._locale = value;
@@ -8,14 +10,116 @@ window.locale = function(value) {
 
     return window._locale;
 };
-window.localeGetLanguage = function() {
+window.localeDatetimeToStr = function(datetime, key = '-dd-mm-yyyy-hh-ii-ss') {
+    fastredRequire('arr', 'datetime', 'int', 'var');
 
-};
-window.localeGetStr = function(key) {
-//  values = fastredImport('LOCALE_STRINGS');
-    return key;
-};
+    var args = [];
+    var obj = datetimeObj(datetime);
+    var arr = arrFromStr(key, '-');
+    var dayPrecending = false;		
+    var value;
 
+    for(i in arr) {
+        value = arr[i];
+        
+        switch (value) {
+
+            case 'd':
+            case 'day':
+                args.push(parseInt(obj.day));
+                dayPrecending = true;
+                break;
+
+            case 'dd':
+                args.push(intToStr(obj.day, 2));
+                dayPrecending = true;
+                break;
+
+            case 'h':
+            case 'hour':
+                args.push(parseInt(obj.hour));
+                break;					
+
+            case 'hh':
+                args.push(intToStr(obj.hour, 2));
+                break;
+                
+            case 'i':
+            case 'minute':
+                args.push(parseInt(obj.minute));
+                break;
+                
+            case 'ii':
+                args.push(intToStr(obj.minute, 2));
+                break;
+
+            case 'm':
+                args.push(parseInt(obj.month));
+                break;
+
+            case 'mm':
+                args.push(intToStr(obj.month, 2));
+                break;
+
+            case 'mon':
+            case 'month':
+                args.push(localeGetStr('-' + value + '-' + obj.month, dayPrecending ? 2 : 1));					
+                dayPrecending = false;
+                break;
+
+            case 's':
+                args.push(parseInt(obj.second));
+                break;
+
+            case 'ss':
+            case 'second':
+                args.push(intToStr(obj.second, 2));
+                break;
+            
+            case 'wd':
+            case 'wkd':
+            case 'weekday':
+                args.push(localeGetStr('-' + value + '-' + datetimeGetWeekday(datetime)));
+                break;
+
+            case 'yyyy':
+                args.push(intToStr(obj.month, 4));
+                break;
+
+            case 'y':
+            case 'year':
+                args.push(parseInt(obj.year));
+                break;
+        }
+    }
+
+    result = localeGetStr(key, args);
+    return varIsEmpty(result) ? arrToStr(args, ' ') : result;
+};
+window.localeGetStr = function(key, args, pluralInt) {
+    var values = localeGetStrObj();
+    var str = values[key];
+
+    if (varIsNumber(args)) pluralInt = args;
+
+    if (varIsNumber(pluralInt)) {
+        str = localeIntGetPlural(pluralInt, str); 
+    }
+
+    if (args !== null) {
+        fastredRequire('str');
+
+        str = strGetFormatted(str, args);
+    }
+
+    return varIsNotEmpty(str) ? str : key;
+};
+window.localeGetStrObj = function() {
+    return {};
+};
+window.localeGetFirstWeekDay = function() {
+    return parseInt(localeGetStr('-weekday-first'));
+};
 window.localeFloatToStr = function(float, precision) {
     var decimalPoint = localeGetStr('-decimal-point');
     var thousandsSeparator = localeGetStr('-thousands-separator');
@@ -25,7 +129,6 @@ window.localeFloatToStr = function(float, precision) {
 
     return parts.join(decimalPoint);
 };
-
 window.localeIntGetPlural = function(int, forms) {
     var rules = {
         'en': 0,

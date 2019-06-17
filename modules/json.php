@@ -5,7 +5,7 @@ if (!function_exists('json')) {
         if (!isset($value)) return 'null';
 
         return defined('JSON_UNESCAPED_UNICODE')
-            ? json_encode($value, JSON_UNESCAPED_UNICODE)
+            ? json_encode($value, JSON_UNESCAPED_UNICODE | JSON_PARTIAL_OUTPUT_ON_ERROR)
             : preg_replace_callback(
                 '/\\\\u([0-9a-f]{4})/i',
                 function ($matches) {

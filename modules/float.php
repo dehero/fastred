@@ -1,5 +1,13 @@
 <?php
 
+function floatGetCeil($float) {
+    return ceil($float);
+}
+
+function floatGetFloor($float) {
+    return floor($float);
+}
+
 function floatGetRound($float) {
     return round($float);
 }

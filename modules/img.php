@@ -1,29 +1,24 @@
 <?php
 
-define('IMG_TYPES', 'jpeg|png|gif');
+const IMG_MIME_TYPE_PNG = 'image/png';
+const IMG_MIME_TYPE_GIF = 'image/gif';
+const IMG_MIME_TYPE_JPEG = 'image/jpeg';
+const IMG_MIME_TYPE_DEFAULT = IMG_MIME_TYPE_PNG;
 
-function img($width, $height, $ext = 'png', $red = 0, $green = 0, $blue = 0) {
-    $img = @imagecreatetruecolor($width, $height);
+if (!function_exists('img')) {
+    function img($width, $height, $color = '#000000ff') {
+        fastredRequire('color');
 
-    switch ($ext) {
-        case 'gif':
-            $color = @imagecolorallocate($img, $red, $green, $blue);
-            @imagefill($img, 0, 0, $color);
-            @imagecolortransparent($img, $color);
-            break;
-        case 'png':
-            @imagesavealpha($img, true);
-            $color = imagecolorallocatealpha($img, $red, $green, $blue, 127);
-            @imagefill($img, 0, 0, $color);
-            //@imagecolortransparent($img, $color);
-            //@imagealphablending($img, false);
-            break;
-        default:
-            $color = @imagecolorallocate($img, $red, $green, $blue);
-            @imagefill($img, 0, 0, $color);
+        $img = @imagecreatetruecolor($width, $height);
+
+        $rgba = colorToRGBA($color);
+
+        @imagesavealpha($img, true);
+        $color = imagecolorallocatealpha($img, $rgba->red, $rgba->green, $rgba->blue, floor($rgba->alpha / 2));
+        @imagefill($img, 0, 0, $color);
+
+        return $img;
     }
-
-    return $img;
 }
 
 function imgBlend($img, $imgOverlay, $options = null) {
@@ -59,8 +54,8 @@ function imgBlend($img, $imgOverlay, $options = null) {
 }
 
 function imgBlendFile($file, $fileOverlay, $options, $fileOutput = null, $quality = 100) {
-    $img = imgGetFile($file);
-    $imgOverlay = imgGetFile($fileOverlay);
+    $img = imgFromFile($file);
+    $imgOverlay = imgFromFile($fileOverlay);
     imgBlend($img, $imgOverlay, $options);
 
     if (empty($fileOutput)) $fileOutput = $file;
@@ -90,6 +85,31 @@ function imgCrop(&$img, $width = null, $height = null, $x = null, $y = null) {
     return array($width, $height);
 }
 
+if (!function_exists('imgExtToMimeType')) {
+    function imgExtToMimeType($ext) {
+        switch($ext) {        
+            case 'jpg':
+            case 'jpeg':    return IMG_MIME_TYPE_JPEG;        
+            case 'gif':     return IMG_MIME_TYPE_GIF;
+            default:        return IMG_MIME_TYPE_PNG;
+        }
+    }
+}
+
+if (!function_exists('imgFileGetSize')) {
+    function imgFileGetSize($file) {
+        // Getting image size
+        list($width, $height) = @getimagesize($file);
+
+        // Applying image rotation, saved in EXIF
+        $exif = @exif_read_data($file);
+        if($exif['Orientation'] == 6 || $exif['Orientation'] == 8)
+            list($width, $height) = array($height, $width);
+
+        return array($width, $height);
+    }
+}
+
 function imgFill(&$img, $width, $height, $cropX = null, $cropY = null) {
     if ((imagesx($img) / imagesy($img)) > ($width / $height)) {
         imgResize($img, null, $height);
@@ -102,7 +122,7 @@ function imgFill(&$img, $width, $height, $cropX = null, $cropY = null) {
 }
 
 function imgFillFile($file, $width, $height, $fileOutput = null, $quality = 100) {
-    $img = imgGetFile($file);
+    $img = imgFromFile($file);
     imgFill($img, $width, $height);
 
     if (empty($fileOutput)) $fileOutput = $file;
@@ -112,16 +132,59 @@ function imgFillFile($file, $width, $height, $fileOutput = null, $quality = 100)
     return true;
 }
 
+if (!function_exists('imgFromFile')) {
+    function imgFromFile($file, &$width = null, &$height = null, &$type = null) {
+        list($width, $height, $type) = @getimagesize($file);
+        $types = array('', 'gif', 'jpeg', 'png');
+        $ext = $types[$type];
+
+        $img = null;
+
+        if ($ext) {
+            $func = 'imagecreatefrom'.$ext;
+
+            $img = @$func($file);
+
+            if ($ext == 'png') {
+                @imagesavealpha($img, true);
+            }
+
+            // Applying image rotation, saved in EXIF
+            $exif = @exif_read_data($file);
+            if(!empty($exif['Orientation'])) {
+                switch($exif['Orientation']) {
+                    case 3:
+                        $img = @imagerotate($img, 180, 0);
+                        break;
+                    case 6:
+                        $img = @imagerotate($img, -90, 0);
+                        list($width, $height) = array($height, $width);
+                        break;
+                    case 8:
+                        $img = @imagerotate($img, 90, 0);
+                        list($width, $height) = array($height, $width);
+                        break;
+                }
+            }
+
+        }
+
+        return $img;
+    }
+}
+
 function imgGetBlended($img, $imgOverlay, $options = null) {
     $imgBlend = imgGetCopy($img);    
     imgBlend($imgBlend, $imgOverlay, $options);    
     return $imgBlend;
 }
 
-function imgGetCopy($img) {
-    $imgCopy = img(imagesx($img), imagesy($img));
-    @imagecopy($imgCopy, $img, 0, 0, 0, 0, imagesx($img), imagesy($img));
-    return $imgCopy;
+if (!function_exists('imgGetCopy')) {
+    function imgGetCopy($img) {
+        $imgCopy = img(imagesx($img), imagesy($img));
+        @imagecopy($imgCopy, $img, 0, 0, 0, 0, imagesx($img), imagesy($img));
+        return $imgCopy;
+    }
 }
 
 function imgGetTransparent($img, $percent = 0) {
@@ -134,79 +197,41 @@ function imgGetTransparent($img, $percent = 0) {
     return $imgOpacity;
 }
 
-function imgGetFile($file, &$width = null, &$height = null, &$type = null) {
-    list($width, $height, $type) = @getimagesize($file);
-    $types = array('', 'gif', 'jpeg', 'png');
-    $ext = $types[$type];
+if (!function_exists('imgSizeGetResized')) {
+    function imgSizeGetResized($width, $height, $widthMax = null, $heightMax = null) {
+        if (!empty($widthMax) && !empty($heightMax) && ($width > $widthMax || $height > $heightMax)) {
+            $height = round($widthMax / $width * $height);
 
-    $img = null;
-
-    if ($ext) {
-        $func = 'imagecreatefrom'.$ext;
-
-        $img = @$func($file);
-
-        if ($ext == 'png') {
-            @imagesavealpha($img, true);
-        }
-
-        // Applying image rotation, saved in EXIF
-        $exif = @exif_read_data($file);
-        if(!empty($exif['Orientation'])) {
-            switch($exif['Orientation']) {
-                case 3:
-                    $img = @imagerotate($img, 180, 0);
-                    break;
-                case 6:
-                    $img = @imagerotate($img, -90, 0);
-                    list($width, $height) = array($height, $width);
-                    break;
-                case 8:
-                    $img = @imagerotate($img, 90, 0);
-                    list($width, $height) = array($height, $width);
-                    break;
-            }
-        }
-
-    }
-
-    return $img;
-}
-
-function imgSizeGetResized($width, $height, $widthMax = null, $heightMax = null) {
-    if (!empty($widthMax) && !empty($heightMax) && ($width > $widthMax || $height > $heightMax)) {
-        $height = round($widthMax / $width * $height);
-
-        if ($height > $heightMax) {
-            $width = round($heightMax / $height * $widthMax);
-            $height = $heightMax;
-        } else
+            if ($height > $heightMax) {
+                $width = round($heightMax / $height * $widthMax);
+                $height = $heightMax;
+            } else
+                $width = $widthMax;
+        } elseif (!empty($widthMax) && $width > $widthMax) {
+            $height = round($widthMax / $width * $height);
             $width = $widthMax;
-    } elseif (!empty($widthMax) && $width > $widthMax) {
-        $height = round($widthMax / $width * $height);
-        $width = $widthMax;
+        }
+        elseif (!empty($heightMax) && $height > $heightMax) {
+            $width = round($heightMax / $height * $width);
+            $height = $heightMax;
+        }
+        return array($width, $height);
     }
-    elseif (!empty($heightMax) && $height > $heightMax) {
-        $width = round($heightMax / $height * $width);
-        $height = $heightMax;
-    }
-    return array($width, $height);
 }
 
-function imgGetSize($file) {
-    // Getting image size
-    list($width, $height) = @getimagesize($file);
+if (!function_exists('imgToUrl')) {
+    function imgToUrl($img, $mimeType = IMG_MIME_TYPE_DEFAULT, $quality = 100) {
+        // Saving image to buffer
+        ob_start();
+        imgSave($img, null, $quality, $mimeType);
+        $data = ob_get_clean();
 
-    // Applying image rotation, saved in EXIF
-    $exif = @exif_read_data($file);
-    if($exif['Orientation'] == 6 || $exif['Orientation'] == 8)
-        list($width, $height) = array($height, $width);
-
-    return array($width, $height);
+        return 'data:' . $mimeType . ';base64,' . base64_encode($data);
+    }
 }
 
 function imgInclude(&$img, $width, $height) {
-    $imgInclude = img($width, $height, 'png', 255, 255, 255);
+    $imgInclude = img($width, $height, '#ffffffff');
     imgLimit($img, $width, $height);
     $img = imgGetBlended($imgInclude, $img, array('percentX' => 50, 'percentY' => 50));
 
@@ -214,7 +239,7 @@ function imgInclude(&$img, $width, $height) {
 }
 
 function imgIncludeFile($file, $width, $height, $fileOutput = null, $quality = 100) {
-    $img = imgGetFile($file);
+    $img = imgFromFile($file);
     imgInclude($img, $width, $height);
 
     if (empty($fileOutput)) $fileOutput = $file;
@@ -224,27 +249,32 @@ function imgIncludeFile($file, $width, $height, $fileOutput = null, $quality = 1
     return true;
 }
 
-function imgSave($img, $file, $quality = 100) {
-    $ext = pathinfo($file, PATHINFO_EXTENSION);
+function imgSave($img, $file = null, $quality = 100, $mimeType = null) {    
+    if (!$mimeType) {
+        // No mime-type defined, try to get it from saved file extension
+        fastredRequire('path');
+        $mimeType = imgExtToMimeType(pathGetExt($file));
+    }
 
     if ($quality > 100) $quality = 100;
 
-    switch ($ext) {
-        case 'jpg':
-        case 'jpeg':
+    switch ($mimeType) {
+        case IMG_MIME_TYPE_JPEG:
             $func = 'imagejpeg';
             break;
-        case 'gif':
+        case IMG_MIME_TYPE_GIF:
             $func = 'imagegif';
             $quality = null;
             break;
-        case 'png':
+        default:
             $func = 'imagepng';
             $quality = round($quality / 100 * 9);
             break;
     }
 
-    @mkdir(dirname($file), 0777, true);
+    if (!empty($file)) {
+        @mkdir(dirname($file), 0777, true);
+    }
     @$func($img, $file, $quality);
 }
 
@@ -261,13 +291,13 @@ function imgLimit(&$img, $widthMax = null, $heightMax = null) {
 
 function imgLimitFile($file, $widthMax = null, $heightMax = null, $fileOutput = null, $quality = 100) {
     // Checking if image dimentions are lower, than max size
-    list($width, $height) = imgGetSize($file);
+    list($width, $height) = imgFileGetSize($file);
     if (($width < $widthMax || empty($widthMax)) && ($height < $heightMax || empty($heightMax))) {
         if (!empty($fileOutput) && $file != $fileOutput) copy($file, $fileOutput);
         return array($width, $height);
     }
 
-    $img = imgGetFile($file);
+    $img = imgFromFile($file);
     list($widthMax, $heightMax) = imgResize($img, $widthMax, $heightMax);
 
     if (empty($fileOutput)) $fileOutput = $file;
@@ -291,14 +321,14 @@ function imgResize(&$img, $widthMax = null, $heightMax = null) {
 
 function imgResizeFile($file, $width_max = null, $height_max = null, $file_output = null, $quality = 100) {
     // Checking if image is already resized to that size
-    list($width, $height) = imgGetSize($file);
+    list($width, $height) = imgFileGetSize($file);
     list($width_new, $height_new) = imgSizeGetResized($width, $height, $width_max, $height_max);
     if ($width == $width_new && $height == $height_new) {
         if (!empty($file_output) && $file != $file_output) copy($file, $file_output);
         return array($width, $height);
     }
 
-    $img = imgGetFile($file);
+    $img = imgFromFile($file);
     list($width_max, $height_max) = imgResize($img, $width_max, $height_max);
 
     if (empty($file_output)) $file_output = $file;
@@ -326,7 +356,7 @@ function imgSpriteFiles($files, $spriteFile, $width = null, $height = null, $met
     $spriteWidth = 0;
     $spriteHeight = 0;
     foreach ($files as $file) {
-        list($fileWidth, $fileHeight) = imgGetSize($file);
+        list($fileWidth, $fileHeight) = imgFileGetSize($file);
 
         switch ($method) {
             case 'resize':
@@ -345,11 +375,11 @@ function imgSpriteFiles($files, $spriteFile, $width = null, $height = null, $met
     }
 
     $map = null;
-    $img_sprite = img($spriteWidth, $spriteHeight, $ext_sprite);
+    $img_sprite = img($spriteWidth, $spriteHeight);
     $offsetX = 0;
     $offsetY = 0;
     foreach ($files as $file) {
-        $img = imgGetFile($file, $fileWidth, $fileHeight);
+        $img = imgFromFile($file, $fileWidth, $fileHeight);
 
         if (!empty($method)) {
             $func = 'img' . $method;

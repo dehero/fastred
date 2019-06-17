@@ -85,3 +85,8 @@ window.urlGetArrToStr = function(getArr) {
 
     return tmp.join(argSeparator);
 };
+
+window.urlRedirect = function(url, statusCode) {
+    // statusCode is not supported
+    window.location.replace(url);
+};

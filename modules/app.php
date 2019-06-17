@@ -25,7 +25,7 @@ if (!function_exists('app')) {
 }
 
 if (!function_exists('appErrorHandle')) {
-    function appErrorHandle() {
+    function appErrorHandle() {        
         try {
             appError(app()->statusCode);
         } catch (Exception $e) {
@@ -109,7 +109,7 @@ if (!function_exists('appRun')) {
 
             $app->page = page($params);
 
-            $statusCode = pageHandle($app->page);
+            $statusCode = pageHandle($app->page);      
 
             $app->debugOutput = ob_get_clean();
 

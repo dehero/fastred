@@ -38,7 +38,7 @@ Module that is implemented both in PHP and JavaScript in whole or in part.
 
 ### Requirements
 
-* [PHP 5.3+](http://www.php.net/downloads.php)
+* [PHP 5.5+](http://www.php.net/downloads.php)
 
 ### Installation
 
