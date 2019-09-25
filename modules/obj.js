@@ -1,5 +1,19 @@
+window.obj = function(obj) {
+    if (varIsObj(obj)) {
+        return obj;        
+    } else if (varIsArr(obj)) {
+        return objFromArr(obj);
+    } else {
+        return {};
+    }   
+};
 window.objFromArr = function (arr) {
-    return arr;
+    var result = {};
+    for (var i = 0; i < arr.length; ++i) {
+        var value = arr[i];
+        result[i] = varIsArr(value) ? objFromArr(value) : value;
+    }
+    return result;
 };
 window.objGetCopy = function(obj, recursive) {
     if (!varIsObj(obj) && !varIsArr(obj)) return obj;
