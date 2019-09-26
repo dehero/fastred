@@ -1,13 +1,17 @@
-window.fileGetExt = function(file) {
-    return file.split('.').pop();
-}
+'use strict';
 
-window.fileGetName = function(file) {
+exports.fileGetExt = function(file) {
+    return file.split('.').pop();
+};
+
+exports.fileGetName = function(file) {
     if (!file) return '';
     return file.replace(/^.*[\\\/]/, '');
 };
 
-window.fileSizeToStr = function(size, precision) {
+exports.fileSizeToStr = function(size, precision) {
+    fastredRequire('locale');
+
     precision = precision || 2;
     size = Math.max(size, 0);
 

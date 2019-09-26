@@ -1,4 +1,6 @@
-window.cssClassArr = function() {
+'use strict';
+
+exports.cssClassArr = function() {
     var obj = cssClassObj.apply(this, arguments);
     var result = [];
 
@@ -11,7 +13,9 @@ window.cssClassArr = function() {
     return result;
 };
 
-window.cssClassObj = function() {
+exports.cssClassObj = function() {
+    fastredRequire('obj', 'var');
+
     var result = {};
     var arg;
 

@@ -1,4 +1,8 @@
-window.datetime = function(value) {
+'use strict';
+
+exports.datetime = function(value) {
+    fastredRequire('var');
+
     if (varIsStr(value)) {
         value = datetimeObj(value);
     }
@@ -21,7 +25,8 @@ window.datetime = function(value) {
         return str.substring(0, 10) + ' ' + str.substring(11, 19);
     }
 };
-window.datetimeObj = function(value, month, day, hour, minute, second) {
+
+exports.datetimeObj = function(value, month, day, hour, minute, second) {
     fastredRequire('int', 'var');
 
     var year;
@@ -55,7 +60,10 @@ window.datetimeObj = function(value, month, day, hour, minute, second) {
     return result;
 
 };
-window.datetimeObjFromStr = function(str) {    
+
+exports.datetimeObjFromStr = function(str) {    
+    fastredRequire('var');
+    
     var matches;
     var year;
     var month;
@@ -89,8 +97,9 @@ window.datetimeObjFromStr = function(str) {
     }
 
     return datetimeObj(parseInt(year), month, day, hour, minute, second);
-}
-window.datetimeObjGetBetween = function(datetime1, datetime2) {
+};
+
+exports.datetimeObjGetBetween = function(datetime1, datetime2) {
     var obj1 = datetimeObj(datetime1);
     var obj2 = datetimeObj(datetime2 || datetime());
 
@@ -121,8 +130,9 @@ window.datetimeObjGetBetween = function(datetime1, datetime2) {
         minute: doCompare(date1, date2, 'Minutes'),
         second: doCompare(date1, date2, 'Seconds')
     };    
-}
-window.datetimeGetModified = function(datetime, year, month, day, hour, minute, second) {   
+};
+
+exports.datetimeGetModified = function(datetime, year, month, day, hour, minute, second) {   
     var obj = datetimeObj(datetime);
 
     var date = new Date(Date.UTC(obj.year, obj.month - 1, obj.day, obj.hour, obj.minute, obj.second));
@@ -150,7 +160,8 @@ window.datetimeGetModified = function(datetime, year, month, day, hour, minute, 
 
     return str.substring(0, 10) + ' ' + str.substring(11, 19);
 };
-window.datetimeGetWeekday = function(datetime) {
+
+exports.datetimeGetWeekday = function(datetime) {
     var date = new Date(datetime);
 
     return date.getDay();

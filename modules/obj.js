@@ -1,4 +1,8 @@
-window.obj = function(obj) {
+'use strict';
+
+exports.obj = function(obj) {
+    fastredRequire('var');
+
     if (varIsObj(obj)) {
         return obj;        
     } else if (varIsArr(obj)) {
@@ -7,7 +11,10 @@ window.obj = function(obj) {
         return {};
     }   
 };
-window.objFromArr = function (arr) {
+
+exports.objFromArr = function (arr) {
+    fastredRequire('var');
+
     var result = {};
     for (var i = 0; i < arr.length; ++i) {
         var value = arr[i];
@@ -15,7 +22,10 @@ window.objFromArr = function (arr) {
     }
     return result;
 };
-window.objGetCopy = function(obj, recursive) {
+
+exports.objGetCopy = function(obj, recursive) {
+    fastredRequire('var');
+
     if (!varIsObj(obj) && !varIsArr(obj)) return obj;
 
     var result = {};
@@ -29,19 +39,24 @@ window.objGetCopy = function(obj, recursive) {
     }
     return result;
 };
-window.objGetMapped = function (obj, mapping) {
+
+exports.objGetMapped = function (obj, mapping) {
     var result = objGetCopy(obj);
     objMap(result, mapping);
     return result;
 };
-window.objGetMerged = function(obj1, obj2, recursive) {
+
+exports.objGetMerged = function(obj1, obj2, recursive) {
     var result = objGetCopy(obj1, recursive);
 
     objMerge(result, obj2);
 
     return result;
 };
-window.objGetProperty = function(obj, key, def) {
+
+exports.objGetProperty = function(obj, key, def) {
+    fastredRequire('var');
+
     var result;
     if (varIsObj(obj) && key != '') {
         result = obj[key];
@@ -55,24 +70,28 @@ window.objGetProperty = function(obj, key, def) {
     };
     return result;
 };
-window.objHasProperties = function (obj) {
+
+exports.objHasProperties = function (obj) {
     for (var name in obj) {
         return false;
     }
     return true;
 };
-window.objMap = function (obj, mapping) {
+
+exports.objMap = function (obj, mapping) {
     for (key1 in mapping) {
         var key2 = mapping[key1];
         if (key2 && typeof key2 === 'function') {
             obj[key1] = key2(obj);
         } else {
             obj[key1] = obj[key2];
-        }
-        
+        }        
     }
 };
-window.objMerge = function(obj1, obj2, recursive) {
+
+exports.objMerge = function(obj1, obj2, recursive) {
+    fastredRequire('var');
+
     if (!varIsObj(obj1) || !varIsObj(obj2)) return null;
 
     for(var key in obj2) {

@@ -1,4 +1,6 @@
-window.color = function (color, green, blue, alpha) {
+'use strict';
+
+exports.color = function (color, green, blue, alpha) {
     fastredRequire('int', 'obj', 'str', 'var');
 
     if (varIsStr(color)) {
@@ -27,8 +29,9 @@ window.color = function (color, green, blue, alpha) {
 
     return strToLowerCase(result);
 };
-window.colorFromStr = function(str) {
-    fastredRequire('arr', 'str');
+
+exports.colorFromStr = function(str) {
+    fastredRequire('str');
 
     var result;
 
@@ -196,7 +199,8 @@ window.colorFromStr = function(str) {
 
     return result;
 };
-window.colorGetMixed = function(color1, color2, percent) {     
+
+exports.colorGetMixed = function(color1, color2, percent) {     
     rgba1 = colorToRGBA(color1);
     rgba2 = colorToRGBA(color2);    
 
@@ -208,7 +212,8 @@ window.colorGetMixed = function(color1, color2, percent) {
     
     return color(red, green, blue, alpha);
 };
-window.colorToRGBA = function(value) {
+
+exports.colorToRGBA = function(value) {
     value = color(value);
 
     matches = value.match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})?$/);

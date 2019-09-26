@@ -1,14 +1,21 @@
-window.strStartsWith = function (str, substr) {
+'use strict';
+
+exports.strStartsWith = function (str, substr) {
     return typeof str === 'string' && (substr === '' || str.indexOf(substr) === 0);
 };
-window.strEndsWith = function (str, substr) {
+
+exports.strEndsWith = function (str, substr) {
     return typeof str === 'string' && str.indexOf(substr, str.length - substr.length) !== -1;
 };
-window.strToLowerCase = function(str) {
+
+exports.strToLowerCase = function(str) {
     if (typeof str !== 'string') return str;
     return str.toLowerCase();
 };
-window.strGetFormatted = function(str, args) {
+
+exports.strGetFormatted = function(str, args) {
+    fastredRequire('var');
+    
     if (typeof str !== 'string') return str;
     if (!varIsArr(args)) {
         args = [args];
@@ -16,12 +23,14 @@ window.strGetFormatted = function(str, args) {
     return str.replace(/%(\d*)/g, function(match, p1) {
         return args[p1 - 1];
     });
-}
-window.strGetReplaced = function(str, search, replace) {
+};
+
+exports.strGetReplaced = function(str, search, replace) {
      if (typeof str !== 'string') return str;
     return str.split(search).join(replace);
 };
-window.strGetTrimmed = function(str, charlist) {
+
+exports.strGetTrimmed = function(str, charlist) {
     //  discuss at: http://locutus.io/php/trim/
     // original by: Kevin van Zonneveld (http://kvz.io)
     // improved by: mdsjack (http://www.mdsjack.bo.it)
@@ -65,4 +74,4 @@ window.strGetTrimmed = function(str, charlist) {
     }
 
     return whitespace.indexOf(str.charAt(0)) === -1 ? str : '';
-}
+};
