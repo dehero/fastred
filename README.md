@@ -133,7 +133,7 @@ THIS_IS_CONSTANT
 
 - Function names should always be written in camelcase. Names of functions start with module ident, like `img*`, `url*` or `pageData*`.
 - Main function of the module is named by module ident itself, like `url()`.
-- Functions with names containing words `Get`, `Of`, like `urlGetCurrent()` or `urlOfPage()` pass main
+- Functions with names containing words `Get`, `Of`, like `scriptGetUrl()` or `urlOfPage()` pass main
 result through their return.
 - Functions with names containing verb in present simple, like `emailIsValid()` or `fileExists()`, usually return boolean result.
 - Functions with name containing `To` or `From` are for conversion.

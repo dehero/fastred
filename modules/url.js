@@ -1,9 +1,5 @@
 'use strict';
 
-exports.URL_HOST = window.location.host;
-
-exports.URL_SCHEME = window.location.protocol + '//';
-
 exports.url = function(route, getArg, anchor, full, host) {
     fastredRequire('script', 'var');
 
@@ -12,8 +8,8 @@ exports.url = function(route, getArg, anchor, full, host) {
         query = null;
 
     if (full) {
-        host = varIsNotEmpty(host) ? host : URL_HOST;
-        result = URL_SCHEME . host . result;
+        host = varIsNotEmpty(host) ? host : SCRIPT_HOST;
+        result = SCRIPT_SCHEME + host + result;
     }
 
     if (varIsNotEmpty(route)) result += route;
@@ -86,9 +82,4 @@ exports.urlGetArrToStr = function(getArr) {
     }
 
     return tmp.join(argSeparator);
-};
-
-exports.urlRedirect = function(url, statusCode) {
-    // statusCode is not supported
-    window.location.replace(url);
 };

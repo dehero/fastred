@@ -1,16 +1,13 @@
 <?php
 
-if (!defined('URL_SCHEME')) define('URL_SCHEME', (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://');
-if (!defined('URL_HOST')) define('URL_HOST', empty($_SERVER['HTTP_HOST']) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST']);
-
 function url($route = null, $get = null, $anchor = null, $full = false, $host = null) {
     fastredRequire('script');
 
     $result = SCRIPT_ROOT_URL;    
 
     if ($full) {
-        $host = !empty($host) ? $host : URL_HOST;
-        $result = URL_SCHEME . $host . $result;        
+        $host = !empty($host) ? $host : SCRIPT_HOST;
+        $result = SCRIPT_SCHEME . $host . $result;
     }
 
     if (!empty($route)) $result .= str_replace('\\', '/', trim($route, '\\\/'));
@@ -26,15 +23,6 @@ function url($route = null, $get = null, $anchor = null, $full = false, $host = 
     if (!empty($anchor)) $result .= '#' . $anchor;
 
     return $result;
-}
-
-if (!function_exists('urlGetCurrent')) {
-    function urlGetCurrent($full = false) {
-        $result = $_SERVER['REQUEST_URI'];
-        if ($full) $result = URL_HOST . $result;
-        
-        return $result;
-    }
 }
 
 function urlGetArrToStr($get) {
@@ -93,12 +81,5 @@ if (!function_exists('urlParamsFromGetArr')) {
         }
 
         return $result;
-    }
-}
-
-if (!function_exists('urlRedirect')) {
-    function urlRedirect($url, $statusCode = 303) {
-        header('Location: ' . $url, true, $statusCode);
-        die();
     }
 }

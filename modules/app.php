@@ -56,22 +56,6 @@ if (!function_exists('appError')) {
     }
 }
 
-if (!function_exists('appGetInitialRoute')) {
-    /**
-     * Return relative path to current page from site root, excluding parameter string.
-     * @return string
-     */
-    function appGetInitialRoute() {
-        if (!isset($_SERVER['PATH_INFO'])) {
-            $lastSlash = strrpos($_SERVER['SCRIPT_NAME'], '/');
-            $currentPath = current(explode('?', $_SERVER['REQUEST_URI'], 2));
-            return $lastSlash === 0 ? substr($currentPath, 1) : substr($currentPath, $lastSlash);
-        } else {
-            return substr($_SERVER['PATH_INFO'], 1);
-        }
-    }
-}
-
 if (!function_exists('appRouteToCtrl')) {
     /**
      * Check route string is PHP file path in /app/views or app/ctrls
@@ -96,7 +80,7 @@ if (!function_exists('appRun')) {
             $app->startTime = microtime(true);
     
             // Get initial route and exclude starting and ending slashes
-            $route = trim(appGetInitialRoute(), '/');    
+            $route = trim(scriptGetRoute(), '/');    
 
             fastredRequire('page');                      
 

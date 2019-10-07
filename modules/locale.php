@@ -9,7 +9,6 @@ if (!defined('LOCALE_LIBRARY_PATH')) {
 
 $__LOCALE_LIBRARIES = array();
 
-
 if (!function_exists('locale')) {
 	function locale($value = null) {
 		static $locale = LOCALE_DEFAULT;
