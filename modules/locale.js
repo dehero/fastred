@@ -1,16 +1,20 @@
-window.LOCALE_DEFAULT = 'en-US';
-window.locale = function(value) {
-    if (typeof window._locale === 'undefined') {
-        window._locale = LOCALE_DEFAULT;
+'use strict';
+
+exports.LOCALE_DEFAULT = 'en-US';
+
+exports.locale = function(value) {
+    if (typeof exports._locale === 'undefined') {
+        exports._locale = LOCALE_DEFAULT;
     }    
 
     if (typeof value === 'string') {
-        window._locale = value;
+        exports._locale = value;
     }
 
-    return window._locale;
+    return exports._locale;
 };
-window.localeDatetimeToStr = function(datetime, key = '-dd-mm-yyyy-hh-ii-ss') {
+
+exports.localeDatetimeToStr = function(datetime, key = '-dd-mm-yyyy-hh-ii-ss') {
     fastredRequire('arr', 'datetime', 'int', 'var');
 
     var args = [];
@@ -96,7 +100,10 @@ window.localeDatetimeToStr = function(datetime, key = '-dd-mm-yyyy-hh-ii-ss') {
     result = localeGetStr(key, args);
     return varIsEmpty(result) ? arrToStr(args, ' ') : result;
 };
-window.localeGetStr = function(key, args, pluralInt) {
+
+exports.localeGetStr = function(key, args, pluralInt) {
+    fastredRequire('var');
+
     var values = localeGetStrObj();
     var str = values[key];
 
@@ -114,13 +121,16 @@ window.localeGetStr = function(key, args, pluralInt) {
 
     return varIsNotEmpty(str) ? str : key;
 };
-window.localeGetStrObj = function() {
+
+exports.localeGetStrObj = function() {
     return {};
 };
-window.localeGetFirstWeekDay = function() {
+
+exports.localeGetFirstWeekDay = function() {
     return parseInt(localeGetStr('-weekday-first'));
 };
-window.localeFloatToStr = function(float, precision) {
+
+exports.localeFloatToStr = function(float, precision) {
     var decimalPoint = localeGetStr('-decimal-point');
     var thousandsSeparator = localeGetStr('-thousands-separator');
 
@@ -129,7 +139,10 @@ window.localeFloatToStr = function(float, precision) {
 
     return parts.join(decimalPoint);
 };
-window.localeIntGetPlural = function(int, forms) {
+
+exports.localeIntGetPlural = function(int, forms) {
+    fastredRequire('arr', 'str');
+
     var rules = {
         'en': 0,
         'af': 0,

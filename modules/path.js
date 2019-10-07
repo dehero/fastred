@@ -1,4 +1,8 @@
-window.path = function () {
+'use strict';
+
+exports.path = function () {
+    fastredRequire('arr');
+
     var pieces = [];
 
     for (var i = 0, numArgs = arguments.length; i < numArgs; i++) {
@@ -9,18 +13,20 @@ window.path = function () {
     return pathFromArr(pieces);
 };
 
-window.pathFromArr = function (arr) {
+exports.pathFromArr = function (arr) {
     return arr.join('/');
 };
 
-window.pathToArr = function (path) {
+exports.pathToArr = function (path) {
     path += '';
     return path.split(/[\\\/]/).filter(function (n) {
         return n !== ''
     });
 };
 
-window.pathGetExt = function(path) {
+exports.pathGetExt = function(path) {
+    fastredRequire('arr');
+
     var parts = arrFromStr(path, '.');
 
     if (arrGetCount(parts) > 1) {
@@ -30,7 +36,9 @@ window.pathGetExt = function(path) {
     return '';
 };
 
-window.pathGetWithNewExt = function(path, ext) {
+exports.pathGetWithNewExt = function(path, ext) {
+    fastredRequire('arr');
+
     var parts = arrFromStr(path, '.');
 
     if (arrGetCount(parts) > 1) {

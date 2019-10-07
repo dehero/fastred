@@ -14,3 +14,9 @@ if (!function_exists('json')) {
                 json_encode($value));
     }
 }
+
+if (!function_exists('jsonToValue')) {
+    function jsonToValue(&$json) {
+        return json_decode($json);
+    }
+}

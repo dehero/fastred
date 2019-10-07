@@ -24,9 +24,10 @@ function fastredLibrary($path) {
  * @link https://robert.accettura.com/blog/2011/06/11/phps-include_once-is-insanely-expensive/
  * @param string $arg1,... List of modules to require
  */
-function fastredRequire($arg1) {
-    global $__FASTRED_LIBRARIES;
-    static $requires = array();
+function fastredRequire($arg1) {    
+    global $__FASTRED_LIBRARIES;    
+    static $requires = array(); 
+    $required = false;
 
     $numArgs = func_num_args();
     for ($i = 0; $i < $numArgs; $i++) {
@@ -38,8 +39,11 @@ function fastredRequire($arg1) {
                 if (file_exists($filename)) require $filename;
             }
             $requires[$name] = true;
+            $required = true;
         }
     }
+
+    return $required;
 }
 
 function fastredHandleFatalError() {    

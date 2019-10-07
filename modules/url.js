@@ -1,8 +1,10 @@
-window.URL_HOST = window.location.host;
+'use strict';
 
-window.URL_SCHEME = window.location.protocol + '//';
+exports.URL_HOST = window.location.host;
 
-window.url = function(route, getArg, anchor, full, host) {
+exports.URL_SCHEME = window.location.protocol + '//';
+
+exports.url = function(route, getArg, anchor, full, host) {
     fastredRequire('script', 'var');
 
     var
@@ -29,7 +31,7 @@ window.url = function(route, getArg, anchor, full, host) {
     return result;
 };
 
-window.urlGetArrToStr = function(getArr) {
+exports.urlGetArrToStr = function(getArr) {
     
     var urlencode = function urlencode(str) {
         str = str + '';
@@ -86,7 +88,7 @@ window.urlGetArrToStr = function(getArr) {
     return tmp.join(argSeparator);
 };
 
-window.urlRedirect = function(url, statusCode) {
+exports.urlRedirect = function(url, statusCode) {
     // statusCode is not supported
     window.location.replace(url);
 };
