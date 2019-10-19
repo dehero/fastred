@@ -95,7 +95,7 @@ exports.objMerge = function(obj1, obj2, recursive) {
     if (!varIsObj(obj1) || !varIsObj(obj2)) return null;
 
     for(var key in obj2) {
-        value = obj2[key];
+        var value = obj2[key];
         if (recursive && varIsObj(value) && varIsObj(obj1[key])) {
             objMerge(obj1[key], value, recursive);
         } else {
