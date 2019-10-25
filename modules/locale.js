@@ -22,8 +22,9 @@ exports.localeDatetimeToStr = function(datetime, key = '-dd-mm-yyyy-hh-ii-ss') {
     var arr = arrFromStr(key, '-');
     var dayPrecending = false;		
     var value;
+    var result;
 
-    for(i in arr) {
+    for(var i in arr) {
         value = arr[i];
         
         switch (value) {
