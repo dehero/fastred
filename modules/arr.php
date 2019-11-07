@@ -114,6 +114,12 @@ if (!function_exists('arrShift')) {
     }
 }
 
+if (!function_exists('arrSort')) {
+    function arrSort(&$arr, $callback = null) {
+        return !is_null($callback) ? usort($arr, $callback) : sort($arr);
+    }
+}
+
 if (!function_exists('arrToStr')) {
     function arrToStr($arr, $delimiter) {
         return implode($delimiter, $arr);

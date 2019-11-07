@@ -18,7 +18,7 @@ exports.varExists = function (value) {
 };
 
 exports.varIsEmpty = function (value) {
-    return (typeof value === 'undefined' || value === '' || value === 0 || value === '0' || value === null || value === false || (varIsArr(value) && value.length === 0 ));
+    return (typeof value === 'undefined' || value === '' || value === 0 || value === '0' || value === null || value === false || (Array.isArray(value) && value.length === 0 ));
 };
 
 exports.varIsNotEmpty = function (value) {

@@ -81,6 +81,10 @@ exports.arrShift = function (arr) {
     return arr.shift();
 };
 
+exports.arrSort = function(arr, callback) {
+    return arr.sort(callback);
+};
+
 exports.arrToStr = function(arr, delimiter) {
     return arr.join(delimiter);
 };
