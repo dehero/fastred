@@ -121,7 +121,7 @@ if (!function_exists('localeGetStrObj')) {
 
 		$locale = locale();
 
-		return cache('localeGetStrObj?' + $locale, function() use($locale) {
+		return cache('localeGetStrObj?' . $locale, function() use($locale) {
 			global $__LOCALE_LIBRARIES;
 
 			fastredRequire('obj');
