@@ -5,7 +5,7 @@ if (!defined('DB_HOST'))        define('DB_HOST', 'localhost');
 if (!defined('DB_USER'))        define('DB_USER', 'root');
 if (!defined('DB_PASSWORD'))    define('DB_PASSWORD', '');
 if (!defined('DB_NAME'))        define('DB_NAME', 'fastred');
-if (!defined('DB_QUERY_LOG'))   define('DB_LOG', false);
+if (!defined('DB_QUERY_LOG'))   define('DB_QUERY_LOG', false);
 
 function db($permanent = DB_PERMANENT) {
     static $db;
