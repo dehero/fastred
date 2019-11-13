@@ -4,10 +4,18 @@ exports.path = function () {
     fastredRequire('arr');
 
     var pieces = [];
+    var fromRoot = false;
 
     for (var i = 0, numArgs = arguments.length; i < numArgs; i++) {
-        arr = pathToArr(arguments[i]);
+        var arg = arguments[i];
+
+        fromRoot = fromRoot || (pieces.length === 0 && /^[\\/]/.test(arg));
+        arr = pathToArr();
         arrMerge(pieces, arr);
+    }
+
+    if (fromRoot) {
+        pieces.unshift('');
     }
 
     return pathFromArr(pieces);
@@ -19,7 +27,7 @@ exports.pathFromArr = function (arr) {
 
 exports.pathToArr = function (path) {
     path += '';
-    return path.split(/[\\\/]/).filter(function (n) {
+    return path.split(/[\\/]/).filter(function (n) {
         return n !== ''
     });
 };

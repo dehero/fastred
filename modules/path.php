@@ -4,13 +4,21 @@ function path($arg1) {
     fastredRequire('arr');
 
     $pieces = [];
-    
+    $fromRoot = false;
+
     $numArgs = func_num_args();
     for ($i = 0; $i < $numArgs; $i++) {
-        $arr = pathToArr(func_get_arg($i));
+        $arg = func_get_arg($i);
+        $fromRoot = $fromRoot || (pieces.length === 0 && preg_match('/^[\\/]/', $arg));
+
+        $arr = pathToArr($arg);
         arrMerge($pieces, $arr);
     }
-    
+
+    if ($fromRoot) {
+        array_unshift($pieces, '');
+    }
+
     return pathFromArr($pieces);
 }
 
@@ -53,7 +61,7 @@ function pathGetExt($path) {
     if (count($parts) > 1) {
         return array_pop($parts);
     }
-    
+
     return '';
 }
 
