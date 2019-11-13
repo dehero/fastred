@@ -9,7 +9,7 @@ function path($arg1) {
     $numArgs = func_num_args();
     for ($i = 0; $i < $numArgs; $i++) {
         $arg = func_get_arg($i);
-        $fromRoot = $fromRoot || (pieces.length === 0 && preg_match('/^[\\/]/', $arg));
+        $fromRoot = $fromRoot || (count($pieces) == 0 && preg_match('/^[\\/]/', $arg));
 
         $arr = pathToArr($arg);
         arrMerge($pieces, $arr);
