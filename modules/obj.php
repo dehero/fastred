@@ -2,12 +2,12 @@
 
 function obj($obj = null) {
     if (is_object($obj)) {
-        return $obj;        
+        return $obj;
     } else if (is_array($obj)) {
         return objFromArr($obj);
     } else {
         return new stdClass();
-    }    
+    }
 }
 
 /**
@@ -20,7 +20,7 @@ function obj($obj = null) {
  */
 function objGetCopy($obj, $recursive = false) {
     if (!is_object($obj) && !is_array($obj)) return $obj;
-    
+
     $result = obj();
     foreach ($obj as $key => $value) {
         if ($recursive && is_object($value)) {
@@ -58,12 +58,12 @@ function objGetMerged($obj1, $obj2, $recursive = false) {
 
 function objGetProperty($obj, $key, $default = null) {
     if ($key != '') {
-        if (is_object($obj)) {
+        if (is_object($obj) && isset($obj->{$key})) {
             $result = $obj->{$key};
         } elseif (is_array($obj)) {
             $result = $obj[$key];
         }
-    } 
+    }
     if (!isset($result)) {
         if (is_object($default) && ($default instanceof Closure)) {
             return $default();
