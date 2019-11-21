@@ -8,9 +8,9 @@ exports.path = function () {
 
     for (var i = 0, numArgs = arguments.length; i < numArgs; i++) {
         var arg = arguments[i];
-
         fromRoot = fromRoot || (pieces.length === 0 && /^[\\/]/.test(arg));
-        arr = pathToArr();
+
+        var arr = pathToArr(arg);
         arrMerge(pieces, arr);
     }
 
