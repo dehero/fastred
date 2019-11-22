@@ -12,7 +12,7 @@ exports.url = function(route, getArg, anchor, full, host) {
         result = SCRIPT_SCHEME + host + result;
     }
 
-    if (varIsNotEmpty(route)) result += route;
+    if (varIsNotEmpty(route)) result += route.replace(/^\/+/, '');
 
     if (varIsHash(getArg)) {
         query = urlGetArrToStr(getArg);
@@ -28,7 +28,7 @@ exports.url = function(route, getArg, anchor, full, host) {
 };
 
 exports.urlGetArrToStr = function(getArr) {
-    
+
     var urlencode = function urlencode(str) {
         str = str + '';
 
