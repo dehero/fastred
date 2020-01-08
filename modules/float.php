@@ -13,5 +13,7 @@ function floatGetRound($float) {
 }
 
 function floatToStr($float, $precision = 2) {
+    $float = (float)$float;
+
     return number_format($float, $precision, '.', '');
 }
