@@ -135,6 +135,8 @@ exports.localeFloatToStr = function(float, precision) {
     var decimalPoint = localeGetStr('-decimal-point');
     var thousandsSeparator = localeGetStr('-thousands-separator');
 
+    precision = typeof precision !== 'undefined' ? precision : 2;
+
     var parts = float.toFixed(precision).split('.');
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandsSeparator);
 

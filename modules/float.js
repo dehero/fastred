@@ -13,5 +13,7 @@ exports.floatGetRound = function(float) {
 };
 
 exports.floatToStr = function(float, precision) {
+    precision  = typeof precision !== 'undefined' ? precision : 2;
+    
     return float.toFixed(precision);
 };

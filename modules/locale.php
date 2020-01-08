@@ -165,7 +165,7 @@ if (!function_exists('localeGetStr')) {
 }
 
 if (!function_exists('localeFloatToStr')) {
-	function localeFloatToStr($float, $precision) {
+	function localeFloatToStr($float, $precision = 2) {
 
 		return number_format($float, $precision,
 			localeGetStr('-decimal-point'),
