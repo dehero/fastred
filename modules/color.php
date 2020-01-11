@@ -214,7 +214,7 @@ function colorToRGBA($color) {
     $result->red = hexdec($matches[1]);
     $result->green = hexdec($matches[2]);
     $result->blue = hexdec($matches[3]);
-    $result->alpha = hexdec($matches[4]);
+    $result->alpha = count($matches) > 4 ? hexdec($matches[4]) : 0;
 
     return $result;
 }
