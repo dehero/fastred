@@ -146,7 +146,9 @@ if (!function_exists('localeGetStr')) {
 	function localeGetStr($key, $args = null, $pluralInt = null) {
 		$values = localeGetStrObj();
 
-		$str = $values->{$key};
+		if (isset($values->{$key})) {
+			$str = $values->{$key};
+		}		
 
 		if (is_numeric($args)) $pluralInt = $args;
 
