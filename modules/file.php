@@ -39,7 +39,7 @@ function fileGetChanged($filepath) {
 }
 
 function fileGetExt($filepath) {
-    return pathinfo($path, PATHINFO_EXTENSION);
+    return pathinfo($filepath, PATHINFO_EXTENSION);
 }
 
 function fileGetName($filepath) {
