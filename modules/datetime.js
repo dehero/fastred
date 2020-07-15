@@ -32,12 +32,12 @@ exports.datetimeObj = function(value, month, day, hour, minute, second) {
     var year;
         
     if (varIsObj(value)) {
-        year = value.year;
-        month = value.month;
-        day = value.day;
-        hour = value.hour;
-        minute = value.minute;
-        second = value.second;
+        year = value.year || 1;
+        month = value.month || 1;
+        day = value.day || 1;
+        hour = value.hour || 0;
+        minute = value.minute || 0;
+        second = value.second || 0;
     } else if (varIsStr(value)) {
         return datetimeObjFromStr(value);
     } else {

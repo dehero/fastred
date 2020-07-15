@@ -77,12 +77,12 @@ if (!function_exists('datetimeObj')) {
         if (is_object($value) || is_array($value)) {            
             $value = obj($value);
 
-            $year = $value->year;
-            $month = $value->month;
-            $day = $value->day;
-            $hour = $value->hour;
-            $second = $value->second;
-            $minute = $value->minute;
+            $year = isset($value->year) ? $value->year : 1;
+            $month = isset($value->month) ? $value->month: 1;
+            $day = isset($value->day) ? $value->day : 1;
+            $hour = isset($value->hour) ? $value->hour : 0;
+            $minute = isset($value->minute) ? $value->minute : 0;            
+            $second = isset($value->second) ? $value->second : 0;
         } elseif (is_string($value)) {
             return datetimeObjFromStr($value);
         } else {
