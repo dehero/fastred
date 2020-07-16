@@ -26,6 +26,14 @@ exports.datetime = function(value) {
     }
 };
 
+exports.datetimeGetDate = function(value) {
+    return datetime(value).substring(0, 10);
+}
+
+exports.datetimeGetTime = function(value) {
+    return datetime(value).substring(11, 20);
+}
+
 exports.datetimeObj = function(value, month, day, hour, minute, second) {
     fastredRequire('int', 'var');
 

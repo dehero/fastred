@@ -33,8 +33,16 @@ if (!function_exists('datetime')) {
     }
 }
 
+function datetimeGetDate($datetime) {
+    return substr(datetime($datetime), 0, 10);
+}
+
 function datetimeGetMonthSize($datetime) {
     return date('t', strtotime($datetime));
+}
+
+function datetimeGetTime($datetime) {
+    return substr(datetime($datetime), 11, 8);    
 }
 
 if (!function_exists('datetimeGetWeekday')) {
