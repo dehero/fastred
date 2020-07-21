@@ -144,6 +144,7 @@ exports.datetimeGetModified = function(datetime, year, month, day, hour, minute,
     var obj = datetimeObj(datetime);
 
     var date = new Date(Date.UTC(obj.year, obj.month - 1, obj.day, obj.hour, obj.minute, obj.second));
+    date.setUTCFullYear(obj.year);
 
     if (varIsNotEmpty(year)) {        
         date.setUTCFullYear(obj.year + year);
