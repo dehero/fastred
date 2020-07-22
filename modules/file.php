@@ -55,6 +55,10 @@ function fileArrGetLastChanged($arr) {
     return $result;
 }
 
+function fileMove($filepath, $newPath) {
+    return rename($filepath, $newPath);
+}
+
 function fileExists($filepath) {
     return file_exists($filepath);
 }

@@ -18,6 +18,12 @@ if (!function_exists('dirExists')) {
     }
 }
 
+if (!function_exists('dirMove')) {
+    function dirMove($dirpath, $newPath) {
+        return rename($dirpath, $newPath);
+    }
+}
+
 if (!function_exists('dirDelete')) {
     function dirDelete($dirpath) {
         if (!is_dir($dirpath)) return false;
